@@ -6,18 +6,11 @@ import (
 )
 
 func main() {
-	fmt.Println("test")
-
-	fmt.Println("Reading file contents of configuration file")
 	dbConfig, err := config.Read()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Printing file contents of configuration file")
-	fmt.Println(dbConfig)
-
-	fmt.Println("Setting user in configuration file")
 	dbConfig.SetUser("quack")
 
 	dbConfig, err = config.Read()
@@ -25,6 +18,4 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Printing file contents of configuration file")
-	fmt.Println(dbConfig)
 }

@@ -38,9 +38,6 @@ func Read() (Config, error) {
 func (cfg Config) SetUser(user string) error {
 	cfg.CurrentUserName = user
 
-	fmt.Println("Current config", cfg.DbUrl, cfg.CurrentUserName)
-	fmt.Println("\n")
-
 	err := write(cfg)
 	if err != nil {
 		return fmt.Errorf("Unable to write to configuration file: %v", err)
