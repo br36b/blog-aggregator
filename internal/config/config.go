@@ -35,10 +35,10 @@ func Read() (Config, error) {
 	return userConfig, nil
 }
 
-func (cfg Config) SetUser(user string) error {
+func (cfg *Config) SetUser(user string) error {
 	cfg.CurrentUserName = user
 
-	err := write(cfg)
+	err := write(*cfg)
 	if err != nil {
 		return fmt.Errorf("Unable to write to configuration file: %v", err)
 	}
