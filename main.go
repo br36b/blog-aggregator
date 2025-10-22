@@ -1,14 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/br36b/blog-aggregator/internal/config"
+	"github.com/br36b/blog-aggregator/internal/database"
+	_ "github.com/lib/pq"
 )
 
 type state struct {
-	cfg config.Config
+	cfg *config.Config
+	db  *database.Queries
 }
 
 type command struct {
@@ -60,8 +65,16 @@ func main() {
 		fmt.Println(err)
 	}
 
+	db, err := sql.Open("postgres", dbConfig.DbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dbQueries := database.New(db)
+
 	appState := &state{
-		cfg: dbConfig,
+		cfg: &dbConfig,
+		db:  dbQueries,
 	}
 
 	appCommands := &commands{
