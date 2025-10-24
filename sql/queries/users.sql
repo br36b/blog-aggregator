@@ -14,5 +14,7 @@ VALUES (
 RETURNING *;
 
 -- name: GetUser :one
-SELECT * FROM users
-WHERE users.name = $1;
+SELECT * FROM users WHERE users.name = $1;
+
+-- name: ResetUserDb :exec
+DELETE FROM users;
