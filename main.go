@@ -99,6 +99,21 @@ func handlerLogin(s *state, cmd command) error {
 	return nil
 }
 
+func handlerReset(s *state, cmd command) error {
+	if len(cmd.args) != 0 {
+		return fmt.Errorf("Usage: %s", cmd.name)
+	}
+
+	err := s.db.ResetUserDb(context.Background())
+	if err != nil {
+		return fmt.Errorf("Failed to reset users database: %v", err)
+	}
+
+	fmt.Println("Successfully reset the users database")
+
+	return nil
+}
+
 func main() {
 	// Basic app initialization
 	dbConfig, err := config.Read()
@@ -124,6 +139,7 @@ func main() {
 
 	appCommands.register("login", handlerLogin)
 	appCommands.register("register", handlerRegister)
+	appCommands.register("reset", handlerReset)
 
 	// Command processing
 	commandArgs := os.Args
