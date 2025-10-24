@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/br36b/blog-aggregator/internal/config"
 	"github.com/br36b/blog-aggregator/internal/database"
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 )
 
@@ -37,6 +40,39 @@ func (c *commands) register(name string, f func(*state, command) error) {
 	c.commandMap[name] = f
 }
 
+func handlerRegister(s *state, cmd command) error {
+	if len(cmd.args) == 0 {
+		return fmt.Errorf("Username must be provided for this command")
+	}
+
+	if len(cmd.args) > 1 {
+		return fmt.Errorf("Too many arguments provided for this command")
+	}
+
+	username := cmd.args[0]
+
+	newUserParams := database.CreateUserParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      username,
+	}
+
+	userEntry, err := s.db.CreateUser(context.Background(), newUserParams)
+	if err != nil {
+		return fmt.Errorf("Failed to create user: %v", err)
+	}
+
+	err = s.cfg.SetUser(username)
+	if err != nil {
+		return fmt.Errorf("Failed to save user: %v", err)
+	}
+
+	fmt.Printf("Successfully created user: %+v\n", userEntry)
+
+	return nil
+}
+
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.args) == 0 {
 		return fmt.Errorf("Username must be provided for this command")
@@ -48,9 +84,14 @@ func handlerLogin(s *state, cmd command) error {
 
 	username := cmd.args[0]
 
-	err := s.cfg.SetUser(username)
+	_, err := s.db.GetUser(context.Background(), username)
 	if err != nil {
-		return fmt.Errorf("Failed to login and save user: %v", err)
+		return fmt.Errorf("User '%s' was not found: %v", username, err)
+	}
+
+	err = s.cfg.SetUser(username)
+	if err != nil {
+		return fmt.Errorf("Failed to login as '%s': %v", username, err)
 	}
 
 	fmt.Printf("Successfully logged in as: %s\n", username)
@@ -82,6 +123,7 @@ func main() {
 	}
 
 	appCommands.register("login", handlerLogin)
+	appCommands.register("register", handlerRegister)
 
 	// Command processing
 	commandArgs := os.Args
