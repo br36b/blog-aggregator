@@ -114,6 +114,31 @@ func handlerReset(s *state, cmd command) error {
 	return nil
 }
 
+func handleGetUsers(s *state, cmd command) error {
+	if len(cmd.args) != 0 {
+		return fmt.Errorf("Usage: %s", cmd.name)
+	}
+
+	userEntries, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("Failed to reset users database: %v", err)
+	}
+
+	fmt.Println("List of all users:")
+	for _, user := range userEntries {
+		lineOutput := fmt.Sprintf("  * %s", user.Name)
+		if user.Name == s.cfg.CurrentUserName {
+			lineOutput += " (current)"
+		}
+
+		fmt.Println(lineOutput)
+	}
+
+	fmt.Println("Successfully reset the users database")
+
+	return nil
+}
+
 func main() {
 	// Basic app initialization
 	dbConfig, err := config.Read()
@@ -140,6 +165,7 @@ func main() {
 	appCommands.register("login", handlerLogin)
 	appCommands.register("register", handlerRegister)
 	appCommands.register("reset", handlerReset)
+	appCommands.register("users", handleGetUsers)
 
 	// Command processing
 	commandArgs := os.Args
