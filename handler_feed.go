@@ -18,7 +18,7 @@ func handleAddRssFeed(s *state, cmd command) error {
 	username := s.cfg.CurrentUserName
 	userEntry, err := s.db.GetUser(context.Background(), username)
 	if err != nil {
-		return fmt.Errorf("User '%s' was not found: %v", username, err)
+		return fmt.Errorf("User '%s' was not found: %w", username, err)
 	}
 
 	// Save Feed

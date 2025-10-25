@@ -12,7 +12,7 @@ func handlerReset(s *state, cmd command) error {
 
 	err := s.db.ResetUserDb(context.Background())
 	if err != nil {
-		return fmt.Errorf("Failed to reset users database: %v", err)
+		return fmt.Errorf("Failed to reset users database: %w", err)
 	}
 
 	fmt.Println("Successfully reset the users database")

@@ -16,12 +16,12 @@ type Config struct {
 func Read() (Config, error) {
 	configFilePath, err := getConfigFilePath()
 	if err != nil {
-		return Config{}, fmt.Errorf("Unable to get configuration file path: %v", err)
+		return Config{}, fmt.Errorf("Unable to get configuration file path: %w", err)
 	}
 
 	file, err := os.Open(configFilePath)
 	if err != nil {
-		return Config{}, fmt.Errorf("Unable to open configuration file: %v", err)
+		return Config{}, fmt.Errorf("Unable to open configuration file: %w", err)
 	}
 	defer file.Close()
 
@@ -29,7 +29,7 @@ func Read() (Config, error) {
 
 	var userConfig Config
 	if err := decoder.Decode(&userConfig); err != nil {
-		return Config{}, fmt.Errorf("Unable to decode configuration file: %v", err)
+		return Config{}, fmt.Errorf("Unable to decode configuration file: %w", err)
 	}
 
 	return userConfig, nil
@@ -40,7 +40,7 @@ func (cfg *Config) SetUser(user string) error {
 
 	err := write(*cfg)
 	if err != nil {
-		return fmt.Errorf("Unable to write to configuration file: %v", err)
+		return fmt.Errorf("Unable to write to configuration file: %w", err)
 	}
 
 	return nil
@@ -49,7 +49,7 @@ func (cfg *Config) SetUser(user string) error {
 func getConfigFilePath() (string, error) {
 	userHome, err := os.UserHomeDir()
 	if err != nil {
-		return "", fmt.Errorf("Failed to get home directory for user: %v", err)
+		return "", fmt.Errorf("Failed to get home directory for user: %w", err)
 	}
 
 	configPath := userHome + "/" + configFileName

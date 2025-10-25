@@ -29,12 +29,12 @@ func handlerRegister(s *state, cmd command) error {
 
 	userEntry, err := s.db.CreateUser(context.Background(), newUserParams)
 	if err != nil {
-		return fmt.Errorf("Failed to create user: %v", err)
+		return fmt.Errorf("Failed to create user: %w", err)
 	}
 
 	err = s.cfg.SetUser(username)
 	if err != nil {
-		return fmt.Errorf("Failed to save user: %v", err)
+		return fmt.Errorf("Failed to save user: %w", err)
 	}
 
 	fmt.Printf("Successfully created user: %+v\n", userEntry)
@@ -55,12 +55,12 @@ func handlerLogin(s *state, cmd command) error {
 
 	_, err := s.db.GetUser(context.Background(), username)
 	if err != nil {
-		return fmt.Errorf("User '%s' was not found: %v", username, err)
+		return fmt.Errorf("User '%s' was not found: %w", username, err)
 	}
 
 	err = s.cfg.SetUser(username)
 	if err != nil {
-		return fmt.Errorf("Failed to login as '%s': %v", username, err)
+		return fmt.Errorf("Failed to login as '%s': %w", username, err)
 	}
 
 	fmt.Printf("Successfully logged in as: %s\n", username)
@@ -75,7 +75,7 @@ func handleGetUsers(s *state, cmd command) error {
 
 	userEntries, err := s.db.GetUsers(context.Background())
 	if err != nil {
-		return fmt.Errorf("Failed to reset users database: %v", err)
+		return fmt.Errorf("Failed to reset users database: %w", err)
 	}
 
 	fmt.Println("List of all users:")
