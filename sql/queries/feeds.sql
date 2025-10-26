@@ -16,3 +16,16 @@ VALUES (
     $6
 )
 RETURNING *;
+
+-- name: GetAllFeeds :many
+SELECT * FROM feeds;
+
+-- name: GetFeedCreatorName :one
+SELECT
+    users.name
+FROM
+    feeds
+JOIN
+    users ON users.id = feeds.user_id
+WHERE
+    $1 = users.id;

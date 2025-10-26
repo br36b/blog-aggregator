@@ -45,6 +45,7 @@ func main() {
 	appCommands.register("users", handleGetUsers)
 	appCommands.register("agg", handleAggregateFeed)
 	appCommands.register("addfeed", handleAddRssFeed)
+	appCommands.register("feeds", handleGetAllRssFeeds)
 
 	// Command processing
 	commandArgs := os.Args

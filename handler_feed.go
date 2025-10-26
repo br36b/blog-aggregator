@@ -42,3 +42,31 @@ func handleAddRssFeed(s *state, cmd command) error {
 
 	return nil
 }
+
+func handleGetAllRssFeeds(s *state, cmd command) error {
+	if len(cmd.args) != 0 {
+		return fmt.Errorf("Usage: %s", cmd.name)
+	}
+
+	// Get Feeds
+	allFeeds, err := s.db.GetAllFeeds(context.Background())
+	if err != nil {
+		return fmt.Errorf("Unable to create feed: %w", err)
+	}
+
+	for _, feed := range allFeeds {
+		fmt.Println("Feed info")
+		fmt.Println("----------")
+		fmt.Printf("\tName: %s\n", feed.Name)
+		fmt.Printf("\tURL: %s\n", feed.Url)
+
+		username, err := s.db.GetFeedCreatorName(context.Background(), feed.UserID)
+		if err != nil {
+			return fmt.Errorf("Unable to fetch feed creator: %w\n", err)
+		}
+
+		fmt.Printf("\tUsername: %s\n\n", username)
+	}
+
+	return nil
+}
