@@ -58,3 +58,32 @@ func handleGetFollowedRssFeeds(s *state, cmd command, user database.User) error 
 
 	return nil
 }
+
+func handleUnfollowRssFeed(s *state, cmd command, user database.User) error {
+	if len(cmd.args) != 1 {
+		return fmt.Errorf("Usage: %s <url>", cmd.name)
+	}
+
+	argUrl := cmd.args[0]
+
+	// Get Feed
+	feedEntry, err := s.db.GetFeedByUrl(context.Background(), argUrl)
+	if err != nil {
+		return fmt.Errorf("No feed matches the URL (%s): %w", argUrl, err)
+	}
+
+	unfollowParams := database.UnfollowFeedParams{
+		UserID: user.ID,
+		FeedID: feedEntry.ID,
+	}
+
+	// Unfollow Feed
+	err = s.db.UnfollowFeed(context.Background(), unfollowParams)
+	if err != nil {
+		return fmt.Errorf("No feed matches the URL (%s): %w", argUrl, err)
+	}
+
+	fmt.Printf("\nSuccessfully unfollowed feed: %s\n", feedEntry.Name)
+
+	return nil
+}
