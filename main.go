@@ -44,10 +44,10 @@ func main() {
 	appCommands.register("reset", handlerReset)
 	appCommands.register("users", handleGetUsers)
 	appCommands.register("agg", handleAggregateFeed)
-	appCommands.register("addfeed", handleAddRssFeed)
+	appCommands.register("addfeed", middlewareLoggedIn(handleAddRssFeed))
 	appCommands.register("feeds", handleGetAllRssFeeds)
-	appCommands.register("follow", handleFollowRssFeed)
-	appCommands.register("following", handleGetFollowedRssFeeds)
+	appCommands.register("follow", middlewareLoggedIn(handleFollowRssFeed))
+	appCommands.register("following", middlewareLoggedIn(handleGetFollowedRssFeeds))
 
 	// Command processing
 	commandArgs := os.Args

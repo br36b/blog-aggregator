@@ -9,16 +9,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func handleAddRssFeed(s *state, cmd command) error {
+func handleAddRssFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.args) != 2 {
 		return fmt.Errorf("Usage: %s <feed_title> <feed_url>", cmd.name)
-	}
-
-	// Get Current User
-	username := s.cfg.CurrentUserName
-	userEntry, err := s.db.GetUser(context.Background(), username)
-	if err != nil {
-		return fmt.Errorf("User '%s' was not found: %w", username, err)
 	}
 
 	// Save Feed
@@ -30,7 +23,7 @@ func handleAddRssFeed(s *state, cmd command) error {
 		UpdatedAt: time.Now(),
 		Name:      feedName,
 		Url:       feedUrl,
-		UserID:    userEntry.ID,
+		UserID:    user.ID,
 	}
 
 	feedEntry, err := s.db.CreateFeed(context.Background(), newFeedParams)
@@ -42,7 +35,7 @@ func handleAddRssFeed(s *state, cmd command) error {
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		UserID:    userEntry.ID,
+		UserID:    user.ID,
 		FeedID:    feedEntry.ID,
 	}
 
@@ -51,7 +44,7 @@ func handleAddRssFeed(s *state, cmd command) error {
 		return fmt.Errorf("Failed to create a feed follow: %w", err)
 	}
 
-	fmt.Printf("Feed: %+v, Follow: %+v \n", feedEntry, feedFollowEntry)
+	fmt.Printf("Feed: %v\nFollow: %+v \n", feedEntry, feedFollowEntry)
 
 	return nil
 }
