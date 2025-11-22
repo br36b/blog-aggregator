@@ -49,6 +49,7 @@ func main() {
 	appCommands.register("follow", middlewareLoggedIn(handleFollowRssFeed))
 	appCommands.register("following", middlewareLoggedIn(handleGetFollowedRssFeeds))
 	appCommands.register("unfollow", middlewareLoggedIn(handleUnfollowRssFeed))
+	appCommands.register("browse", middlewareLoggedIn(handleBrowseRssPosts))
 
 	// Command processing
 	commandArgs := os.Args
