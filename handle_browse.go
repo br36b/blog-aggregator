@@ -34,7 +34,10 @@ func handleBrowseRssPosts(s *state, cmd command, user database.User) error {
 		return fmt.Errorf("Failed to get posts for user: %w", err)
 	}
 
-	fmt.Printf("%d latest post(s):\n", itemLimitBase32)
+	fmt.Printf("Latest post(s):\n")
+	if len(posts) == 0 {
+		fmt.Printf("\tNo posts found from followed feeds.\n")
+	}
 
 	for _, post := range posts {
 		fmt.Println("\nTitle:", post.Title)
