@@ -11,7 +11,8 @@ import (
 
 func handlerRegister(s *state, cmd command) error {
 	if len(cmd.args) == 0 {
-		return fmt.Errorf("Username must be provided for this command")
+		return fmt.Errorf("Usage: %s <username>", cmd.name)
+
 	}
 
 	if len(cmd.args) > 1 {
@@ -44,7 +45,7 @@ func handlerRegister(s *state, cmd command) error {
 
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.args) == 0 {
-		return fmt.Errorf("Username must be provided for this command")
+		return fmt.Errorf("Usage: %s <username>", cmd.name)
 	}
 
 	if len(cmd.args) > 1 {
